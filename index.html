@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday, Vanessa 🎂</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 40%, #fbc2eb 70%, #a18cd1 100%);
+    overflow-x: hidden;
+    color: #5b3a5e;
+  }
+
+  /* ====== HEARTS FALLING ====== */
+  .hearts-bg { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+  .heart-fall {
+    position: absolute;
+    top: -50px;
+    font-size: 20px;
+    animation: fall linear forwards;
+    opacity: 0.8;
+    user-select: none;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ====== ENVELOPE / START SCREEN ====== */
+  #start-screen {
+    position: fixed; inset: 0; z-index: 50;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #ff9a9e, #a18cd1);
+    transition: opacity 1s, visibility 1s;
+  }
+  #start-screen.hidden { opacity: 0; visibility: hidden; }
+  .envelope {
+    width: 220px; height: 150px; background: #fff;
+    border-radius: 12px; position: relative;
+    cursor: pointer;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: bounce 2s infinite;
+  }
+  .envelope::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    border-left: 110px solid transparent;
+    border-right: 110px solid transparent;
+    border-top: 80px solid #ffb6c1;
+    border-radius: 12px 12px 0 0;
+  }
+  .envelope::after {
+    content: '💌'; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); font-size: 50px;
+    z-index: 2;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  .tap-text {
+    color: #fff; margin-top: 40px; font-size: 1.2rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.5; } }
+
+  /* ====== MAIN ====== */
+  main { position: relative; z-index: 2; display: none; }
+  main.show { display: block; }
+
+  .section {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 40px 20px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 8vw, 4rem);
+    background: linear-gradient(90deg, #e63980, #9d4edd, #ff6b9d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+  }
+
+  .typing-text {
+    font-size: 1.2rem; max-width: 600px;
+    line-height: 1.8; min-height: 120px;
+    background: rgba(255,255,255,0.6);
+    padding: 25px 30px; border-radius: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  }
+  .cursor {
+    display: inline-block; width: 2px; height: 1.1em;
+    background: #e63980; vertical-align: text-bottom;
+    animation: blink 0.8s infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ====== CAKE ====== */
+  .cake-wrap { position: relative; margin-top: 30px; cursor: pointer; }
+  .cake { width: 250px; height: 200px; position: relative; }
+  .plate {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 15px; background: #ddd; border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  }
+  .layer { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 12px; }
+  .layer-1 { bottom: 12px; width: 230px; height: 70px; background: linear-gradient(#f4a6c0, #e886ab); }
+  .layer-2 { bottom: 80px; width: 180px; height: 60px; background: linear-gradient(#fff0f5, #ffd6e7); }
+  .layer-3 { bottom: 138px; width: 130px; height: 55px; background: linear-gradient(#f4a6c0, #e886ab); }
+  .icing {
+    position: absolute; top: -12px; left: 0; right: 0; height: 25px;
+    background: radial-gradient(circle at 10px -8px, transparent 14px, #fff 15px);
+    background-size: 30px 30px; background-repeat: repeat-x;
+    border-radius: 12px 12px 0 0;
+  }
+  .candle {
+    position: absolute; bottom: 193px; width: 10px; height: 35px;
+    background: repeating-linear-gradient(45deg, #fff, #fff 5px, #ffb6c1 5px, #ffb6c1 10px);
+    border-radius: 3px; left: 50%;
+  }
+  .candle:nth-child(odd) { transform: translateX(-70px); }
+  .flame {
+    position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+    width: 16px; height: 24px;
+    background: radial-gradient(circle at 50% 70%, #ffeb3b, #ff9800 60%, transparent 75%);
+    border-radius: 50% 50% 20% 20%;
+    animation: flicker 0.3s infinite alternate;
+    filter: drop-shadow(0 0 10px #ff9800);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .flame.out { opacity: 0; transform: translateX(-50%) scale(0.2); }
+  @keyframes flicker {
+    from { transform: translateX(-50%) scale(1) rotate(-3deg); }
+    to   { transform: translateX(-50%) scale(1.15) rotate(4deg); }
+  }
+  .cake-hint { margin-top: 50px; color: #8a5a8f; font-size: 1rem; }
+  .wish-text {
+    margin-top: 20px; font-size: 1.3rem; color: #e63980;
+    opacity: 0; transition: opacity 1.5s; font-weight: bold;
+  }
+  .wish-text.show { opacity: 1; }
+
+  /* ====== REASONS CARDS ====== */
+  .cards {
+    display: flex; flex-wrap: wrap; gap: 20px;
+    justify-content: center; margin-top: 40px; max-width: 800px;
+  }
+  .card {
+    width: 160px; height: 160px; perspective: 600px; cursor: pointer;
+  }
+  .card-inner {
+    width: 100%; height: 100%; position: relative;
+    transform-style: preserve-3d; transition: transform 0.7s;
+  }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .card-front, .card-back {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    border-radius: 16px; display: flex; align-items: center;
+    justify-content: center; padding: 15px; font-size: 2.5rem;
+  }
+  .card-front {
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  }
+  .card-back {
+    background: linear-gradient(135deg, #e63980, #9d4edd);
+    color: #fff; transform: rotateY(180deg);
+    font-size: 0.95rem; font-weight: 600; line-height: 1.4;
+  }
+
+  /* ====== PHOTOS ====== */
+  .photos {
+    display: flex; gap: 20px; justify-content: center;
+    flex-wrap: wrap; margin-top: 40px;
+  }
+  .photo-frame {
+    width: 200px; height: 250px; background: #fff;
+    padding: 12px 12px 45px; border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transform: rotate(-3deg); transition: transform 0.3s;
+    cursor: pointer;
+  }
+  .photo-frame:nth-child(2) { transform: rotate(3deg); }
+  .photo-frame:nth-child(3) { transform: rotate(-2deg); }
+  .photo-frame:hover { transform: rotate(0) scale(1.08); z-index: 3; }
+  .photo-frame img {
+    width: 100%; height: 100%; object-fit: cover;
+    background: #f3d9e5; border-radius: 2px;
+  }
+  .photo-frame .caption {
+    text-align: center; margin-top: 10px; color: #8a5a8f; font-style: italic;
+  }
+
+  /* ====== FINAL ====== */
+  .final-btn {
+    margin-top: 30px; padding: 15px 45px;
+    border: none; border-radius: 50px; cursor: pointer;
+    font-size: 1.1rem; font-weight: bold; color: #fff;
+    background: linear-gradient(90deg, #e63980, #9d4edd);
+    box-shadow: 0 10px 25px rgba(230,57,128,0.4);
+    transition: transform 0.2s;
+  }
+  .final-btn:hover { transform: scale(1.08); }
+
+  .hidden-msg {
+    margin-top: 30px; font-size: 1.4rem; line-height: 2;
+    max-width: 500px; opacity: 0; transition: opacity 1.5s;
+  }
+  .hidden-msg.show { opacity: 1; }
+
+  .arrow-down {
+    margin-top: 30px; font-size: 1.6rem; color: #fff;
+    animation: bob 1.5s infinite;
+  }
+  @keyframes bob { 50% { transform: translateY(10px); } }
+
+  /* ====== MUSIC BUTTON ====== */
+  .music-btn {
+    position: fixed; top: 20px; right: 20px; z-index: 60;
+    width: 52px; height: 52px; border-radius: 50%;
+    border: none; cursor: pointer; font-size: 22px;
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    display: none; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+  }
+  .music-btn.show { display: flex; }
+  .music-btn:hover { transform: scale(1.12); }
+  .music-btn.playing { animation: pulseBtn 1.2s infinite; }
+  @keyframes pulseBtn {
+    0%,100% { box-shadow: 0 0 0 0 rgba(230,57,128,0.5); }
+    50% { box-shadow: 0 0 0 12px rgba(230,57,128,0); }
+  }
+
+  /* ====== FX: FIREWORKS / TAP BURST / UFO ====== */
+  .fx { position: fixed; z-index: 90; pointer-events: none; user-select: none; }
+  .tap-hint {
+    margin-top: 15px; font-size: 0.85rem;
+    color: rgba(255,255,255,0.95);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.15);
+  }
+  .ufo { display: flex; flex-direction: column; align-items: center; width: 90px; }
+  .ufo-body {
+    font-size: 45px; line-height: 1;
+    animation: ufoBob 0.9s infinite alternate;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  }
+  @keyframes ufoBob { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+  .ufo-beam {
+    width: 54px; height: 58px; margin-top: -4px;
+    background: linear-gradient(to bottom, rgba(160,240,255,0.65), rgba(160,240,255,0));
+    clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+  }
+  .ufo-heart {
+    position: absolute; top: 38px; left: 50%; margin-left: -10px;
+    font-size: 20px; animation: beamUp 2.6s infinite;
+  }
+  @keyframes beamUp {
+    0% { transform: translateY(42px) scale(1); opacity: 0; }
+    15% { opacity: 1; }
+    100% { transform: translateY(-40px) scale(0.35); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- START -->
+<div id="start-screen">
+  <div class="envelope" onclick="openGift()"></div>
+  <div class="tap-text">💌 Ketuk untuk membuka kejutan...</div>
+</div>
+
+<button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Play / Pause musik">🎵</button>
+
+<main id="mainContent">
+
+  <!-- PESAN -->
+  <section class="section">
+    <h1>Happy Birthday, Vanessa! 🎂</h1>
+    <div class="typing-text"><span id="typeTarget"></span><span class="cursor"></span></div>
+    <div class="arrow-down">⬇️</div>
+    <div class="tap-hint">psst... coba ketuk di mana saja 😉</div>
+  </section>
+
+  <!-- KUE -->
+  <section class="section">
+    <h1>Tiup Lilinnya! 🕯️</h1>
+    <div class="cake-wrap" onclick="blowCandle()">
+      <div class="plate"></div>
+      <div class="cake">
+        <div class="layer layer-1"><div class="icing"></div></div>
+        <div class="layer layer-2"><div class="icing"></div></div>
+        <div class="layer layer-3"></div>
+        <div class="candle" style="transform:translateX(-70px)"><div class="flame"></div></div>
+        <div class="candle" style="transform:translateX(60px)"><div class="flame"></div></div>
+        <div class="candle" style="transform:translateX(-15px)"><div class="flame"></div></div>
+      </div>
+    </div>
+    <div class="cake-hint">* ketuk kuenya untuk meniup lilin</div>
+    <div class="wish-text" id="wishText">✨ Semoga semua wish kamu terkabul! Aku akan selalu ada di sini untuk kamu. ✨</div>
+    <div class="arrow-down">⬇️</div>
+  </section>
+
+  <!-- ALASAN -->
+  <section class="section">
+    <h1>Alasan Aku Masih Sayang Kamu, Vanessa 💗</h1>
+    <p style="margin-top:10px; color:#8a5a8f;">(ketuk kartunya)</p>
+    <div class="cards">
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+          <div class="card-front">😄</div>
+          <div class="card-back">Senyummu masih jadi hal favoritku di dunia ini</div>
+        </div>
+      </div>
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+          <div class="card-front">🥰</div>
+          <div class="card-back">Sampai sekarang... kamu masih bikin aku gugup</div>
+        </div>
+      </div>
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+          <div class="card-front">⭐</div>
+          <div class="card-back">Kamu bikin hari biasa jadi luar biasa</div>
+        </div>
+      </div>
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+          <div class="card-front">💬</div>
+          <div class="card-back">Setiap ngobrol sama kamu... nggak pernah mau berakhir</div>
+        </div>
+      </div>
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+          <div class="card-front">🌧️</div>
+          <div class="card-back">Mood kamu bisa ubah suasana hatiku seharian</div>
+        </div>
+      </div>
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+          <div class="card-front">💌</div>
+          <div class="card-back">Karena hatiku ini... masih dan selalu kamu</div>
+        </div>
+      </div>
+    </div>
+    <div class="arrow-down">⬇️</div>
+  </section>
+
+  <!-- FOTO -->
+  <section class="section">
+    <h1>Momen Bersamamu 📸</h1>
+    <div class="photos">
+      <div class="photo-frame">
+        <img src="https://placehold.co/400x500/ffd6e7/8a5a8f?text=Foto+1" alt="foto 1">
+        <div class="caption">pertama kali ketemu ✨</div>
+      </div>
+      <div class="photo-frame">
+        <img src="https://placehold.co/400x500/ffd6e7/8a5a8f?text=Foto+2" alt="foto 2">
+        <div class="caption">momen favoritku</div>
+      </div>
+      <div class="photo-frame">
+        <img src="https://placehold.co/400x500/ffd6e7/8a5a8f?text=Foto+3" alt="foto 3">
+        <div class="caption">kamu 🤍</div>
+      </div>
+    </div>
+    <div class="arrow-down">⬇️</div>
+  </section>
+
+  <!-- PENUTUP -->
+  <section class="section">
+    <h1>Satu lagi... 🤫</h1>
+    <button class="final-btn" onclick="showFinal()">Ketuk Aku 💗</button>
+    <div class="hidden-msg" id="finalMsg">
+      Selamat ulang tahun, Vanessa. 🎉<br><br>
+      Terima kasih sudah lahir ke dunia,<br>
+      dan terima kasih sudah hadir di hidupku.<br><br>
+      Aku nggak minta apa-apa hari ini...<br>
+      cuma mau jujur satu hal:<br><br>
+      <strong>sampai detik ini, perasaanku masih sama.<br>
+      Kamu masih jadi orang yang bikin aku senyum<br>
+      tanpa alasan yang jelas.</strong><br><br>
+      Semoga tahun ini jadi tahun terbaikmu.<br>
+      Dan apapun nanti jawabannya...<br>
+      aku cuma pengin kamu bahagia. 🤍<br><br>
+      — dari seseorang yang masih sayang sama kamu 💌
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // ---------- GANTI NAMA DI SINI ----------
+  const nama = "Vanessa"; // nama pacar kamu
+
+  const messages = [
+    `Halo Vanessa! Hari ini hari spesial banget...`,
+    `Di hari seperti ini... dulu kamu lahir ke dunia. 🌍`,
+    `Dan tanpa kamu sadari... kamu juga lahir di hatiku. 💖`,
+    "Aku punya sesuatu yang mau aku bilang... scroll ke bawah ya 🎁"
+  ];
+
+  let started = false;
+
+  function openGift() {
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('mainContent').classList.add('show');
+    startMusic();
+    setTimeout(ufoFlyby, 7000);
+    if (!started) { started = true; typeAll(); }
+    launchConfetti();
+  }
+
+  // ---------- TYPING ----------
+  async function typeAll() {
+    const target = document.getElementById('typeTarget');
+    for (const msg of messages) {
+      for (const ch of msg) {
+        target.textContent += ch;
+        await new Promise(r => setTimeout(r, 45));
+      }
+      await new Promise(r => setTimeout(r, 1200));
+      target.textContent = '';
+    }
+    target.textContent = `Happy Birthday, Vanessa! 🎂💖`;
+  }
+
+  // ---------- CANDLE ----------
+  function blowCandle() {
+    const flames = document.querySelectorAll('.flame');
+    const allOut = [...flames].every(f => f.classList.contains('out'));
+    if (!allOut) {
+      flames.forEach(f => f.classList.add('out'));
+      document.getElementById('wishText').classList.add('show');
+      launchConfetti();
+      launchFireworks(5);
+    }
+  }
+
+  // ---------- FINAL ----------
+  function showFinal() {
+    document.getElementById('finalMsg').classList.add('show');
+    launchConfetti();
+    launchFireworks(8);
+    launchHearts();
+  }
+
+  // ---------- FALLING HEARTS ----------
+  function launchHearts() {
+    const bg = document.getElementById('heartsBg');
+    const interval = setInterval(() => {
+      const h = document.createElement('div');
+      h.className = 'heart-fall';
+      h.textContent = ['💖','💗','🩷','❤️','💕'][Math.floor(Math.random()*5)];
+      h.style.left = Math.random()*100 + 'vw';
+      h.style.fontSize = (14 + Math.random()*22) + 'px';
+      h.style.animationDuration = (4 + Math.random()*5) + 's';
+      bg.appendChild(h);
+      setTimeout(() => h.remove(), 9000);
+    }, 400);
+    setTimeout(() => clearInterval(interval), 8000);
+  }
+
+  // ---------- CONFETTI ----------
+  function launchConfetti() {
+    const colors = ['#ff6b9d','#ffd6e7','#a18cd1','#ffeb3b','#ff9a9e','#fff'];
+    for (let i = 0; i < 80; i++) {
+      const c = document.createElement('div');
+      c.style.cssText = `position:fixed;top:-20px;left:${Math.random()*100}vw;
+        width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        z-index:100;pointer-events:none;border-radius:${Math.random()>0.5?'50%':'2px'};`;
+      document.body.appendChild(c);
+      const fall = c.animate([
+        { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+        { transform: `translateY(110vh) rotate(${720*Math.random()}deg)`, opacity: 0.3 }
+      ], { duration: 2500 + Math.random()*2000, easing: 'cubic-bezier(.2,.8,.3,1)' });
+      fall.onfinish = () => c.remove();
+    }
+  }
+
+  // ---------- MUSIC (music box: "Happy Birthday") ----------
+  let audioCtx = null, master = null, musicPlaying = false, musicTimer = null;
+
+  const NOTES = {
+    C4:261.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88,
+    C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99,
+    C3:130.81, F3:174.61, G3:196.00
+  };
+
+  // [nada, ketukan] — 3/4 waltz
+  const MELODY = [
+    ['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
+    ['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
+    ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],
+    ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',3]
+  ];
+
+  // bass per ketukan (offset, nada)
+  const BASS = [
+    [0,'C3'],[3,'G3'],[6,'G3'],[9,'C3'],
+    [12,'C3'],[15,'F3'],[17.5,'G3'],
+    [19.5,'F3'],[22.5,'G3'],[24,'C3']
+  ];
+
+  const BPM = 92;
+  const beat = 60 / BPM;
+
+  function ensureCtx() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    master = audioCtx.createGain();
+    master.gain.value = 0.55;
+    master.connect(audioCtx.destination);
+    // echo lembut ala music box
+    const delay = audioCtx.createDelay();
+    delay.delayTime.value = 0.4;
+    const fb = audioCtx.createGain(); fb.gain.value = 0.3;
+    const wet = audioCtx.createGain(); wet.gain.value = 0.25;
+    master.connect(delay); delay.connect(fb); fb.connect(delay);
+    delay.connect(wet); wet.connect(audioCtx.destination);
+  }
+
+  function playNote(freq, time, dur, vol, octave2) {
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0, time);
+    g.gain.linearRampToValueAtTime(vol, time + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, time + Math.max(dur, 0.5) + 1);
+    g.connect(master);
+    const o = audioCtx.createOscillator();
+    o.type = 'sine'; o.frequency.value = freq;
+    o.connect(g);
+    if (octave2) {
+      const g2 = audioCtx.createGain(); g2.gain.value = 0.22; g2.connect(g);
+      const o2 = audioCtx.createOscillator();
+      o2.type = 'triangle'; o2.frequency.value = freq * 2;
+      o2.connect(g2);
+      o2.start(time); o2.stop(time + Math.max(dur, 0.5) + 1.1);
+    }
+    o.start(time); o.stop(time + Math.max(dur, 0.5) + 1.1);
+  }
+
+  function scheduleSong(t0) {
+    let t = t0;
+    for (const [note, dur] of MELODY) {
+      playNote(NOTES[note], t, dur * beat, 0.45, true);
+      t += dur * beat;
+    }
+    for (const [off, note] of BASS) {
+      playNote(NOTES[note], t0 + off * beat, 1.2, 0.14, false);
+    }
+    return t + beat; // waktu selesai + jeda
+  }
+
+  function loopSong() {
+    if (!musicPlaying) return;
+    const end = scheduleSong(audioCtx.currentTime + 0.2);
+    musicTimer = setTimeout(loopSong, (end - audioCtx.currentTime) * 1000 + 800);
+  }
+
+  function updateMusicBtn() {
+    const btn = document.getElementById('musicBtn');
+    btn.textContent = musicPlaying ? '🎵' : '🔇';
+    btn.classList.toggle('playing', musicPlaying);
+  }
+
+  function startMusic() {
+    ensureCtx();
+    document.getElementById('musicBtn').classList.add('show');
+    audioCtx.resume().then(() => {
+      if (!musicPlaying) {
+        musicPlaying = true;
+        loopSong();
+        updateMusicBtn();
+      }
+    });
+  }
+
+  function stopMusic() {
+    musicPlaying = false;
+    clearTimeout(musicTimer);
+    if (audioCtx) audioCtx.suspend();
+    updateMusicBtn();
+  }
+
+  function toggleMusic() {
+    musicPlaying ? stopMusic() : startMusic();
+  }
+
+  // ---------- TAP BURST (ketuk di mana saja) ----------
+  document.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('button, .envelope, .cake-wrap, .card, .photo-frame, .music-btn, a, img')) return;
+    tapBurst(e.clientX, e.clientY);
+  });
+
+  function tapBurst(x, y) {
+    const ring = document.createElement('div');
+    ring.className = 'fx';
+    ring.style.cssText = `left:${x}px;top:${y}px;width:12px;height:12px;margin:-6px 0 0 -6px;border:2px solid #fff;border-radius:50%;`;
+    document.body.appendChild(ring);
+    ring.animate([
+      { transform: 'scale(1)', opacity: 0.9 },
+      { transform: 'scale(6)', opacity: 0 }
+    ], { duration: 500 }).onfinish = () => ring.remove();
+
+    const emojis = ['💖','✨','💗','🌟','💕'];
+    for (let i = 0; i < 7; i++) {
+      const h = document.createElement('div');
+      h.className = 'fx';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.cssText = `left:${x}px;top:${y}px;font-size:${12 + Math.random() * 14}px;margin:-10px 0 0 -8px;`;
+      document.body.appendChild(h);
+      const ang = Math.random() * Math.PI * 2;
+      const dist = 45 + Math.random() * 75;
+      h.animate([
+        { transform: 'translate(0,0) scale(0.3)', opacity: 1 },
+        { transform: `translate(${Math.cos(ang) * dist}px, ${Math.sin(ang) * dist - 35}px) scale(1.2)`, opacity: 0 }
+      ], { duration: 750 + Math.random() * 400, easing: 'ease-out' }).onfinish = () => h.remove();
+    }
+  }
+
+  // ---------- FIREWORKS ----------
+  const FW_COLORS = ['#ff6b9d', '#ffd700', '#a18cd1', '#7ce8ff', '#ff9a9e', '#ffffff'];
+  function fireworkAt(xPct, yPct) {
+    const rocket = document.createElement('div');
+    rocket.className = 'fx';
+    rocket.style.cssText = `left:${xPct}vw;top:100vh;width:4px;height:14px;border-radius:2px;background:#fff;box-shadow:0 0 8px #ffd700;`;
+    document.body.appendChild(rocket);
+    rocket.animate([
+      { transform: 'translateY(0)' },
+      { transform: `translateY(-${100 - yPct}vh)` }
+    ], { duration: 650, easing: 'ease-out' }).onfinish = () => {
+      rocket.remove();
+      explodeAt(xPct, yPct);
+    };
+  }
+
+  function explodeAt(xPct, yPct) {
+    const color = FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)];
+    const count = 44;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'fx';
+      const size = 3 + Math.random() * 4;
+      p.style.cssText = `left:${xPct}vw;top:${yPct}vh;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 6px ${color};`;
+      document.body.appendChild(p);
+      const ang = (i / count) * Math.PI * 2 + Math.random() * 0.2;
+      const dist = 70 + Math.random() * 95;
+      p.animate([
+        { transform: 'translate(0,0) scale(1)', opacity: 1 },
+        { transform: `translate(${Math.cos(ang) * dist}px, ${Math.sin(ang) * dist + 45}px) scale(0.2)`, opacity: 0 }
+      ], { duration: 950 + Math.random() * 600, easing: 'cubic-bezier(.2,.8,.3,1)' }).onfinish = () => p.remove();
+    }
+  }
+
+  function launchFireworks(n) {
+    for (let i = 0; i < n; i++) {
+      setTimeout(() => fireworkAt(10 + Math.random() * 80, 12 + Math.random() * 38), i * 520);
+    }
+  }
+
+  // ---------- UFO PENCURI HATI ----------
+  function ufoFlyby() {
+    const ufo = document.createElement('div');
+    ufo.className = 'fx ufo';
+    ufo.innerHTML = '<div class="ufo-body">🛸</div><div class="ufo-beam"></div><div class="ufo-heart">💖</div>';
+    ufo.style.top = (8 + Math.random() * 30) + 'vh';
+    const dir = Math.random() > 0.5 ? 1 : -1;
+    ufo.style.left = dir === 1 ? '-100px' : 'calc(100vw + 20px)';
+    document.body.appendChild(ufo);
+    const fly = ufo.animate([
+      { transform: 'translateX(0)' },
+      { transform: `translateX(${dir * (window.innerWidth + 220)}px)` }
+    ], { duration: 10000, easing: 'linear' });
+    fly.onfinish = () => ufo.remove();
+    setTimeout(ufoFlyby, 15000 + Math.random() * 20000);
+  }
+
+  // hearts on load
+  launchHearts();
+</script>
+</body>
+</html>
